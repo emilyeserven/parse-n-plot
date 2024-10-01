@@ -2,8 +2,7 @@ import { useState, useEffect, createRef } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { ExcelRenderer } from 'react-excel-renderer';
-import { read, utils } from 'xlsx';
+import { ExcelRenderer } from './utils/ExcelRenderer';
 
 function App() {
     const [count, setCount] = useState(0)
@@ -20,6 +19,13 @@ function App() {
 
     const renderFile = (fileObj) => {
         console.log('fileObj', fileObj);
+
+
+        /* generate array of presidents from the first worksheet
+        const wb = fileObj;
+        const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
+        const data: [] = utils.sheet_to_json(ws); // generate objects
+*/
 
         ExcelRenderer(fileObj, (err, resp) => {
             if (err) {
