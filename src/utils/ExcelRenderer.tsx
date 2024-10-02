@@ -11,11 +11,7 @@ interface SheetObj {
     cols: Array<ColumnObj>[]
 }
 
-interface ExcelRendererCallbackResp {
-    sheets: SheetObj[]
-}
-
-type ExcelRendererCallback = (err: Error | null, resp: ExcelRendererCallbackResp) => void;
+type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
 
 /**
  * Adapting react-excel-renderer to read multiple sheets.
@@ -41,7 +37,7 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
             const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
 
             // Initialize the data variable
-            const data = [];
+            const data: SheetObj[] = [];
 
             // Loop through each sheet and assemble its formatted data
             wb.SheetNames.forEach((sheet: string) => {
@@ -55,13 +51,13 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
 
                 const sheetData = { name: sheet, rows: rows, cols: cols };
 
+                // @stacyrays the error is the shape of this `sheetData` here, I
+                // can't seem to get the interface defined at the top to work with it.
+                // Specifically the issue is something involving `cols`.
                 data.push(sheetData);
             })
 
             resolve(data);
-
-            // @stacyrays the error is the shape of this `data` here, I
-            // can't seem to get the interface defined at the top to work with it.
             return callback(null, data);
         };
         if (file && rABS) reader.readAsBinaryString(file);
