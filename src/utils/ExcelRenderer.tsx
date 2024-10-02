@@ -36,45 +36,30 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
         reader.onload = function(e) {
             /* Parse data */
             const bstr = e.target?.result;
+
+            // The Excel workbook
             const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
 
-            // All sheet names, for debugging
-            console.log('wb', wb);
-            console.log('wb.SheetNames', wb.SheetNames);
-            // TODO: Make it so sheet names get looped over
-            // wil need to loop through and then update the data object to return a few things
-
+            // Initialize the data variable
             const data = [];
+
+            // Loop through each sheet and assemble its formatted data
             wb.SheetNames.forEach((sheet: string) => {
-                console.log('sheet', sheet);
+
+                // The Excel worksheet
                 const ws = wb.Sheets[sheet];
-                console.log('ws', ws);
-                console.log('ws test', wb.Sheets['May-June 2021']);
 
                 /* Convert array of arrays */
-                const json = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
                 const cols = ws["!ref"] ? make_cols(ws["!ref"]) : { name: 'null', key: 0};
 
-                const sheetData = { name: sheet, rows: json, cols: cols };
+                const sheetData = { name: sheet, rows: rows, cols: cols };
 
                 data.push(sheetData);
-                console.log('data in sheet', sheet, data);
             })
 
-            /*
-            /* Get first worksheet
-            const wsname = wb.SheetNames[0];
-            const ws = wb.Sheets[wsname];
-
-            /* Convert array of arrays
-            const json = XLSX.utils.sheet_to_json(ws, { header: 1 });
-            const cols = ws["!ref"] ? make_cols(ws["!ref"]) : { name: 'null', key: 0};
-
-            const data = [];
-            */
-
             resolve(data);
-            console.log('data', data);
+
             // @stacyrays the error is the shape of this `data` here, I
             // can't seem to get the interface defined at the top to work with it.
             return callback(null, data);
