@@ -75,6 +75,8 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
 
             resolve(data);
             console.log('data', data);
+            // @stacyrays the error is the shape of this `data` here, I
+            // can't seem to get the interface defined at the top to work with it.
             return callback(null, data);
         };
         if (file && rABS) reader.readAsBinaryString(file);
