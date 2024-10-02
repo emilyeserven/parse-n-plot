@@ -44,23 +44,34 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
             // TODO: Make it so sheet names get looped over
             // wil need to loop through and then update the data object to return a few things
 
+            const data = [];
             wb.SheetNames.forEach((sheet: string) => {
                 console.log('sheet', sheet);
                 const ws = wb.Sheets[sheet];
                 console.log('ws', ws);
                 console.log('ws test', wb.Sheets['May-June 2021']);
 
+                /* Convert array of arrays */
+                const json = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                const cols = ws["!ref"] ? make_cols(ws["!ref"]) : { name: 'null', key: 0};
+
+                const sheetData = { name: sheet, rows: json, cols: cols };
+
+                data.push(sheetData);
+                console.log('data in sheet', sheet, data);
             })
 
-            /* Get first worksheet */
+            /*
+            /* Get first worksheet
             const wsname = wb.SheetNames[0];
             const ws = wb.Sheets[wsname];
 
-            /* Convert array of arrays */
+            /* Convert array of arrays
             const json = XLSX.utils.sheet_to_json(ws, { header: 1 });
             const cols = ws["!ref"] ? make_cols(ws["!ref"]) : { name: 'null', key: 0};
 
-            const data = { name: 'test', rows: json, cols: cols };
+            const data = [];
+            */
 
             resolve(data);
             console.log('data', data);
