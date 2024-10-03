@@ -1,31 +1,23 @@
-import { useState, useEffect, createRef } from 'react'
+import {useState, useEffect, createRef, SyntheticEvent} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { ExcelRenderer } from './utils/ExcelRenderer';
+import {ExcelRenderer, SheetObj} from './utils/ExcelRenderer';
 
 function App() {
     const [count, setCount] = useState(0)
-    const [pres, setPres] = useState();
 
     const [isOpen, setIsOpen] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [isFormInvalid, setIsFormInvalid] = useState(false);
-    const [rows, setRows] = useState<[]>([]);
+    const [wbData, setWbData] = useState<SheetObj[] | null>(null);
     const [cols, setCols] = useState<[]>([]);
     const [uploadedFileName, setUploadedFileName] = useState('');
 
     const fileInput = createRef();
 
-    const renderFile = (fileObj) => {
+    const renderFile = (fileObj: File) => {
         console.log('fileObj', fileObj);
-
-
-        /* generate array of presidents from the first worksheet
-        const wb = fileObj;
-        const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
-        const data: [] = utils.sheet_to_json(ws); // generate objects
-*/
 
         ExcelRenderer(fileObj, (err, resp) => {
             if (err) {
@@ -34,13 +26,13 @@ function App() {
             else {
                 console.log('resp', resp);
                 setDataLoaded(true);
-                setCols(resp.cols);
-                setRows(resp.rows);
+                setWbData(resp);
             }
         });
     }
 
-    const fileHandler　= (event) => {
+    const fileHandler = (event) => {
+        console.log('event', event);
         if(event.target.files.length){
             const fileObj = event.target.files[0];
             const fileName = fileObj.name;
@@ -65,39 +57,6 @@ function App() {
     const openFileBrowser = () => {
         fileInput.current.click();
     }
-
-/*
-    /* Fetch and update the state once
-    useEffect(() => { (async() => {
-        /* Download from https://docs.sheetjs.com/pres.numbers
-        const f = await fetch(null);
-        const ab = await f.arrayBuffer();
-
-        /* parse
-        const wb = read(ab);
-
-        /* generate array of presidents from the first worksheet
-        const ws = wb.Sheets[wb.SheetNames[0]]; // get the first worksheet
-        const data: [] = utils.sheet_to_json(ws); // generate objects
-
-        /* update state
-        setPres(data); // update state
-        console.log('pres', pres);
-    })(); }, []);
-
-    useEffect(() => {
-        if (pres) {
-            pres.map(row => {
-                console.log('row', row);
-                console.log('row empty', row.__EMPTY_3);
-            });
-        }
-    }, [pres]);
-
-
-    console.log('pres', pres);
-
- */
 
     return (
         <>

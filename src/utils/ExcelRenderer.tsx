@@ -5,7 +5,7 @@ interface ColumnObj {
     key: number
 }
 
-interface SheetObj {
+export interface SheetObj {
     name: string,
     rows: unknown[],
     cols: ColumnObj[] | ColumnObj
