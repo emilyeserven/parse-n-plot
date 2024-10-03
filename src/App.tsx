@@ -34,6 +34,7 @@ function App() {
     const fileInput = createRef();
 
 
+    // Once we have the workbook data, we get the first 10 rows and columns for a preview.
     useEffect(() => {
         if (wbData !== null) {
             const firstSheetRows = wbData[0].rows.slice(0,9);
@@ -47,7 +48,6 @@ function App() {
     }, [wbData]);
 
     const renderFile = (fileObj: File) => {
-
         ExcelRenderer(fileObj, (err, resp) => {
             if (err) {
                 console.log(err);
@@ -71,21 +71,19 @@ function App() {
         }
     }
 
+    // Parses address info once the button to identify the column to use is clicked.
     const handleColButton = (col: ColumnObj) => {
         const targetCol = col.name;
         if (targetCol && wbData) {
 
             const chosenColumn = wbData[0].cols.find((col) => col.name === targetCol);
-            console.log('chosenColumn', chosenColumn);
             const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
-            console.log('columnIndex', columnIndex);
             const allRowsArray: unknown[] = [];
 
             // For every sheet in the workbook, add the rows to the allRowsArray
             wbData.forEach(sheet => {
                 sheet.rows.forEach((row) => allRowsArray.push(row));
             })
-            console.log('rowArray', allRowsArray);
             const columnContentsArray: (string | undefined)[] = [];
 
             // Loop through each row and add the chosen column to
@@ -94,11 +92,9 @@ function App() {
                     columnContentsArray.push(row[columnIndex]);
                 }
             });
-            console.log('columnContentsArray', columnContentsArray);
 
             // Remove the undefined results
             const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
-            console.log('cleanResults', cleanResults);
 
             // Will need an array with only addresses
             const parsedAddresses: AddressObj[] = [];
