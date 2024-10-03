@@ -16,32 +16,36 @@ function App() {
 
     const fileInput = createRef();
 
-    const askForColumn = (resp) => {
-        console.log('askForColumn');
-        const test = window.prompt('column?');
-        console.log('test', test);
-        console.log('resp', resp);
-        console.log('resp[0]', resp[0]);
-        console.log('resp[0].cols', resp[0].cols);
-        const colObj = resp[0].cols.find((col) => col.name === test);
-        console.log('colObj', colObj);
-        const colKey = colObj.key;
-        const rows = resp[0].rows;
-        const rowArray = [];
-        resp.forEach(sheet => {
-            console.log('sheet', sheet);
-            sheet.rows.forEach((row) => rowArray.push(row));
-        })
-        console.log('rowArray', rowArray);
-        const rowColumnArray = [];
-        rowArray.forEach((row) => {
-            rowColumnArray.push(row[colKey]);
-        });
-        // for testing, use E
-        console.log('rowColumnArray', rowColumnArray);
-        const cleanResults = rowColumnArray.filter((rowData) => rowData !== undefined);
-        console.log('cleanResults', cleanResults);
-    }
+
+    useEffect(() => {
+        const resp = wbData;
+        if (resp !== null) {
+            console.log('askForColumn');
+            const test = window.prompt('column?');
+            console.log('test', test);
+            console.log('resp', resp);
+            console.log('resp[0]', resp[0]);
+            console.log('resp[0].cols', resp[0].cols);
+            const colObj = resp[0].cols.find((col) => col.name === test);
+            console.log('colObj', colObj);
+            const colKey = colObj.key;
+            const rows = resp[0].rows;
+            const rowArray = [];
+            resp.forEach(sheet => {
+                console.log('sheet', sheet);
+                sheet.rows.forEach((row) => rowArray.push(row));
+            })
+            console.log('rowArray', rowArray);
+            const rowColumnArray = [];
+            rowArray.forEach((row) => {
+                rowColumnArray.push(row[colKey]);
+            });
+            // for testing, use E
+            console.log('rowColumnArray', rowColumnArray);
+            const cleanResults = rowColumnArray.filter((rowData) => rowData !== undefined);
+            console.log('cleanResults', cleanResults);
+        }
+    }, [wbData]);
 
     const renderFile = (fileObj: File) => {
         console.log('fileObj', fileObj);
@@ -54,7 +58,6 @@ function App() {
                 console.log('resp', resp);
                 setDataLoaded(true);
                 setWbData(resp);
-                askForColumn(resp);
             }
         });
     }
