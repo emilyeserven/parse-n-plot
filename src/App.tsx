@@ -2,7 +2,6 @@ import {useState, useEffect, createRef} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import * as parser from 'parse-address';
-import * as zipcodes from 'zipcodes';
 import './App.css'
 import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
@@ -11,13 +10,11 @@ function App() {
 
     const [isOpen, setIsOpen] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(false);
-    const [isFormInvalid, setIsFormInvalid] = useState(false);
     const [wbData, setWbData] = useState<SheetObj[] | null>(null);
     const [demoRows, setDemoRows] = useState<unknown[] | null>(null);
     const [demoCols, setDemoCols] = useState<ColumnObj[] | null>(null);
     const [cityCounts, setCityCounts] = useState();
-    const [cols, setCols] = useState<[]>([]);
-    const [uploadedFileName, setUploadedFileName] = useState('');
+    const [totalCount, setTotalCount] = useState(0);
 
     const fileInput = createRef();
 
@@ -35,21 +32,18 @@ function App() {
     }, [wbData]);
 
     const renderFile = (fileObj: File) => {
-        console.log('fileObj', fileObj);
 
         ExcelRenderer(fileObj, (err, resp) => {
             if (err) {
                 console.log(err);
             }
             else {
-                console.log('resp', resp);
                 setWbData(resp);
             }
         });
     }
 
     const fileHandler = (event) => {
-        console.log('event', event);
         if(event.target.files.length){
             const fileObj = event.target.files[0];
             const fileName = fileObj.name;
@@ -57,19 +51,13 @@ function App() {
 
             //check for file extension and pass only if it is .xlsx and display error message otherwise
             if(fileName.slice(fileName.lastIndexOf('.')+1) === ("xlsx" || "xls")){
-                setUploadedFileName(fileName);
-                setIsFormInvalid(false);
                 renderFile(fileObj);
-            } else {
-                setIsFormInvalid(true);
-                setUploadedFileName('');
             }
         }
     }
 
     const handleColButton = (col) => {
         const targetCol = col.name;
-        console.log('targetCol', targetCol);
         if (targetCol && wbData) {
 
             const chosenColumn = wbData[0].cols.find((col) => col.name === targetCol);
@@ -93,7 +81,6 @@ function App() {
             });
             console.log('columnContentsArray', columnContentsArray);
 
-            // for testing, use E
             // Remove the undefined results
             const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
             console.log('cleanResults', cleanResults);
@@ -105,9 +92,11 @@ function App() {
             });
             console.log('parsedAddresses', parsedAddresses);
 
+            // Removed undefined entries and items that aren't addresses
             const cleanedAddresses = parsedAddresses.filter((item) => item.city !== undefined && item.state !== undefined);
             console.log('cleanedAddresses', cleanedAddresses);
 
+            // Make an object to count each individual city
             const cityCount = {};
             cleanedAddresses.forEach((item) => {
                 const cityStateString = `${item.city}, ${item.state}`;
@@ -122,19 +111,8 @@ function App() {
             });
             console.log('cityCount', cityCount);
             setCityCounts(cityCount);
-            /*
-            const parsedZipcodes = [];
-            cleanedAddresses.forEach((address) => {
-                const zipcode = zipcodes.lookupByName(address.city, address.state);
-                parsedZipcodes.push(zipcode);
-            })
-            console.log('parsedZipcodes', parsedZipcodes);
-            */
+            setTotalCount(cleanedAddresses.length);
         }
-    }
-
-    const toggle = () => {
-        setIsOpen(!isOpen);
     }
 
     const openFileBrowser = () => {
@@ -197,6 +175,7 @@ function App() {
             <div>
                 { (cityCounts) && (
                     <>
+                        Total: {totalCount}
                         <table>
                             <thead>
                                 <tr>
