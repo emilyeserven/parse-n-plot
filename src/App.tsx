@@ -6,13 +6,31 @@ import * as parser from 'parse-address';
 import './App.css'
 import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
+type AddressObj = {
+    number?: string,
+    prefix?: string,
+    street?: string,
+    type?: string,
+    city?: string,
+    state?: string,
+    zip?: string
+}
+type City = {
+        name: string,
+        count: number
+}
+
+type CityObj = {
+    [key: string]: City
+}
+
 function App() {
     const [count, setCount] = useState(0)
     const [dataLoaded, setDataLoaded] = useState(false);
     const [wbData, setWbData] = useState<SheetObj[] | null>(null);
     const [demoRows, setDemoRows] = useState<unknown[] | null>(null);
     const [demoCols, setDemoCols] = useState<ColumnObj[] | null>(null);
-    const [cityCounts, setCityCounts] = useState();
+    const [cityCounts, setCityCounts] = useState<CityObj | null>();
     const [totalCount, setTotalCount] = useState(0);
 
     const fileInput = createRef();
@@ -85,7 +103,7 @@ function App() {
             console.log('cleanResults', cleanResults);
 
             // Will need an array with only addresses
-            const parsedAddresses = [];
+            const parsedAddresses: AddressObj[] = [];
             cleanResults.forEach((item) => {
                 parsedAddresses.push(parser.parseLocation(item));
             });
@@ -96,7 +114,7 @@ function App() {
             console.log('cleanedAddresses', cleanedAddresses);
 
             // Make an object to count each individual city
-            const cityCount = {};
+            const cityCount: CityObj = {};
             cleanedAddresses.forEach((item) => {
                 const cityStateString = `${item.city}, ${item.state}`;
                 if (cityCount[cityStateString]) {
