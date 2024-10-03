@@ -23,7 +23,7 @@ function App() {
     const [usedCol, setUsedCol] = useState<string | null>(null);
 
     const fileInput: React.RefObject<HTMLInputElement> = createRef();
-    const isCityCountsHaveProperties = cityCounts && Object.getOwnPropertyNames(cityCounts).length !== 0;
+    const isCityCountsHasProperties = cityCounts && Object.getOwnPropertyNames(cityCounts).length !== 0;
     const isOutTableCanBeDisplayed = dataLoaded && demoRows && demoCols;
 
 
@@ -141,7 +141,7 @@ function App() {
                 )}
             </div>
             <div>
-                { usedCol && isCityCountsHaveProperties && (
+                { usedCol && isCityCountsHasProperties && (
                     <>
                         <h2 className='text-2xl mt-10 mb-2'>4: Review the results!</h2>
                         <h3 className='text-1xl mt-2 mb-4'>(FYI, there were {totalCount} addresses total.)</h3>
@@ -163,7 +163,7 @@ function App() {
                         </table>
                     </>
                 )}
-                {usedCol !== null && !isCityCountsHaveProperties && (
+                {usedCol !== null && !isCityCountsHasProperties && (
                     <>
                         <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>Try another!</h3>
