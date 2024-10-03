@@ -1,6 +1,7 @@
 import {useState, useEffect, createRef} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import * as parser from 'parse-address';
 import './App.css'
 import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
@@ -96,6 +97,11 @@ function App() {
             console.log('cleanResults', cleanResults);
 
             // Will need an array with only addresses
+            const parsedAddresses = [];
+            cleanResults.forEach((item) => {
+                parsedAddresses.push(parser.parseLocation(item));
+            });
+            console.log('parsedAddresses', parsedAddresses);
         }
     }
 
