@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import {Component} from "react";
+import {FC} from "react";
 
 export interface ColumnObj {
     name: string,
@@ -12,41 +12,60 @@ export interface SheetObj {
     cols: ColumnObj[]
 }
 
-export class OutTable extends Component {
+type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
 
-    constructor(props) {
-        super(props);
-        this.state = {
-
-        }
-    }
-
-    render() {
-        return (
-            <div className={this.props.className}>
-                <table className={this.props.tableClassName}  >
-                    <tbody>
-                    <tr>
-                        {this.props.withZeroColumn && !this.props.withoutRowNum && <th className={this.props.tableHeaderRowClass || ""}></th>}
-                        {
-                            this.props.columns.map((c) =>
-                                <th key={c.key} className={c.key === -1 ? this.props.tableHeaderRowClass : ""}>{c.key === -1 ? "" : c.name}</th>
-                            )
-
-                        }
-                    </tr>
-                    {this.props.data.map((r,i) => <tr key={i}>
-                        {!this.props.withoutRowNum && <td key={i} className={'border-solid border-2 border-slate-200'}>{this.props.renderRowNum?this.props.renderRowNum(r,i):i}</td>}
-                        {this.props.columns.map(c => <td key={c.key} className={'border-solid border-2 border-slate-200'}>{ r[c.key] }</td>)}
-                    </tr>)}
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
+type OutTableProps = {
+    data: unknown[],
+    columns: ColumnObj[],
+    className: string,
+    tableClassName: string,
+    withZeroColumn?: boolean,
+    withRowNum?: boolean,
+    renderRowNum?: (r: unknown, i: number) => React.ReactNode,
+    tableHeaderRowClass?: string
 }
 
-type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
+/**
+ * Adapting react-excel-renderer's OutTable component to be typescript
+ * @link Original Library - https://github.com/ashishd751/react-excel-renderer/tree/master
+ */
+export const OutTable: FC<OutTableProps> = ({
+        data,
+        columns,
+        className,
+        tableClassName,
+        withZeroColumn = false,
+        withRowNum = true,
+        renderRowNum,
+        tableHeaderRowClass
+    },
+): React.ReactNode => {
+    return (
+        <div className={className}>
+            <table className={tableClassName}>
+                <tbody>
+                <tr>
+                    {withZeroColumn && withRowNum &&
+                        <th className={tableHeaderRowClass || ""}></th>}
+                    {
+                        columns.map((c) =>
+                            <th key={c.key}
+                                className={c.key === -1 ? tableHeaderRowClass : ""}>{c.key === -1 ? "" : c.name}</th>
+                        )
+
+                    }
+                </tr>
+                {data.map((r, i) => <tr key={i}>
+                    {withRowNum && <td key={i}
+                                                      className={'border-solid border-2 border-slate-200'}>{renderRowNum ? renderRowNum(r, i) : i}</td>}
+                    {columns.map(c => <td key={c.key}
+                                                     className={'border-solid border-2 border-slate-200'}>{r[c.key]}</td>)}
+                </tr>)}
+                </tbody>
+            </table>
+        </div>
+    );
+}
 
 /**
  * Adapting react-excel-renderer to read multiple sheets.
