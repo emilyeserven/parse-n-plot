@@ -17,8 +17,8 @@ type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
 type OutTableProps = {
     data: unknown[],
     columns: ColumnObj[],
-    className: string,
-    tableClassName: string,
+    className?: string,
+    tableClassName?: string,
     withZeroColumn?: boolean,
     withRowNum?: boolean,
     renderRowNum?: (r: unknown, i: number) => React.ReactNode,

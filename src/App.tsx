@@ -166,7 +166,7 @@ function App() {
                 Click on the Vite and React logos to learn more
             </p>
             <div>
-                { dataLoaded && (
+                { (dataLoaded && demoRows && demoCols) && (
                     <OutTable
                         data={demoRows}
                         columns={demoCols}
