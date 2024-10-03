@@ -30,6 +30,7 @@ function App() {
     const [demoCols, setDemoCols] = useState<ColumnObj[] | null>(null);
     const [cityCounts, setCityCounts] = useState<CityObj | null>();
     const [totalCount, setTotalCount] = useState(0);
+    const [usedCol, setUsedCol] = useState<string | null>(null);
 
     const fileInput = createRef();
 
@@ -73,10 +74,11 @@ function App() {
 
     // Parses address info once the button to identify the column to use is clicked.
     const handleColButton = (col: ColumnObj) => {
-        const targetCol = col.name;
-        if (targetCol && wbData) {
+        const selectedColName = col.name;
+        setUsedCol(selectedColName);
 
-            const chosenColumn = wbData[0].cols.find((col) => col.name === targetCol);
+        if (selectedColName && wbData) {
+            const chosenColumn = wbData[0].cols.find((col) => col.name === selectedColName);
             const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
             const allRowsArray: unknown[] = [];
 
@@ -162,7 +164,7 @@ function App() {
                         {demoCols.map((col) => (
                             <button
                                 onClick={() => handleColButton(col)}
-                                className={'mx-2'}
+                                className={`mx-2 ${col.name === usedCol ? 'bg-slate-200 text-black' : ''}`}
                                 key={col.key}
                             >
                                 {col.name}
@@ -172,7 +174,7 @@ function App() {
                 )}
             </div>
             <div>
-                { (cityCounts) && (
+                { (Object.getOwnPropertyNames(cityCounts).length > 0) ? (
                     <>
                         <h2 className='text-2xl mt-8 mb-2'>4: Review the results!</h2>
                         Total: {totalCount}
@@ -184,7 +186,7 @@ function App() {
                             </tr>
                             </thead>
                             <tbody>
-                            {Object.keys(cityCounts).map((city) => (
+                            {Object.getOwnPropertyNames(cityCounts).map((city) => (
                                 <tr key={cityCounts[city].name}>
                                     <td>{cityCounts[city].name}</td>
                                     <td>{cityCounts[city].count}</td>
@@ -192,6 +194,11 @@ function App() {
                             ))}
                             </tbody>
                         </table>
+                    </>
+                ) : (
+                    <>
+                        <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
+                        <h3 className='text-1xl mt-2 mb-2'>Try another!</h3>
                     </>
                 )}
             </div>
