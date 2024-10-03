@@ -82,7 +82,7 @@ function App() {
 
             // For every sheet in the workbook, add the rows to the allRowsArray
             wbData.forEach(sheet => {
-                sheet.rows.forEach((row) => allRowsArray.push(row));
+                sheet.rows.forEach((row) => row && allRowsArray.push(row));
             })
             const columnContentsArray: (string | undefined)[] = [];
 
@@ -96,20 +96,20 @@ function App() {
             // Remove the undefined results
             const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
 
-            // Will need an array with only addresses
+            // Parse all cleaned results as addresses
             const parsedAddresses: AddressObj[] = [];
             cleanResults.forEach((item) => {
-                parsedAddresses.push(parser.parseLocation(item));
-            });
-            console.log('parsedAddresses', parsedAddresses);
+                const parsedLocation = parser.parseLocation(item);
+                const isCityAndStateExist = parsedLocation.city !== undefined && parsedLocation.state !== undefined;
 
-            // Removed undefined entries and items that aren't addresses
-            const cleanedAddresses = parsedAddresses.filter((item) => item.city !== undefined && item.state !== undefined);
-            console.log('cleanedAddresses', cleanedAddresses);
+                if (isCityAndStateExist) {
+                    parsedAddresses.push(parsedLocation);
+                }
+            });
 
             // Make an object to count each individual city
             const cityCount: CityObj = {};
-            cleanedAddresses.forEach((item) => {
+            parsedAddresses.forEach((item) => {
                 const cityStateString = `${item.city}, ${item.state}`;
                 if (cityCount[cityStateString]) {
                     cityCount[cityStateString].count = cityCount[cityStateString].count + 1;
@@ -122,7 +122,7 @@ function App() {
             });
             console.log('cityCount', cityCount);
             setCityCounts(cityCount);
-            setTotalCount(cleanedAddresses.length);
+            setTotalCount(parsedAddresses.length);
         }
     }
 
