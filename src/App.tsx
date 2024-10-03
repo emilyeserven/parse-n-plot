@@ -2,7 +2,7 @@ import {useState, useEffect, createRef} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {ExcelRenderer, SheetObj} from './utils/ExcelRenderer';
+import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
 function App() {
     const [count, setCount] = useState(0)
@@ -11,6 +11,8 @@ function App() {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [isFormInvalid, setIsFormInvalid] = useState(false);
     const [wbData, setWbData] = useState<SheetObj[] | null>(null);
+    const [demoRows, setDemoRows] = useState<unknown[] | null>(null);
+    const [demoCols, setDemoCols] = useState<ColumnObj[] | null>(null);
     const [cols, setCols] = useState<[]>([]);
     const [uploadedFileName, setUploadedFileName] = useState('');
 
@@ -19,33 +21,13 @@ function App() {
 
     useEffect(() => {
         if (wbData !== null) {
-            const columnToUse = window.prompt('column?');
+            const firstSheetRows = wbData[0].rows.slice(0,9);
+            setDemoRows(firstSheetRows);
 
-            const chosenColumn = wbData[0].cols.find((col) => col.name === columnToUse);
-            const columnIndex = chosenColumn?.key;
-            const allRowsArray: unknown[] = [];
+            const firstSheetCols = wbData[0].cols.slice(0,9);
+            setDemoCols(firstSheetCols);
 
-            // For every sheet in the workbook, add the rows to the allRowsArray
-            wbData.forEach(sheet => {
-                sheet.rows.forEach((row) => allRowsArray.push(row));
-            })
-            console.log('rowArray', allRowsArray);
-            const columnContentsArray: (string|undefined)[] = [];
-
-            // Loop through each row and add the chosen column to
-            allRowsArray.forEach((row) => {
-                if (row[columnIndex]) {
-                    columnContentsArray.push(row[columnIndex]);
-                }
-            });
-            console.log('columnContentsArray', columnContentsArray);
-
-            // for testing, use E
-            // Remove the undefined results
-            const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
-            console.log('cleanResults', cleanResults);
-
-            // Will need an array with only addresses
+            setDataLoaded(true);
         }
     }, [wbData]);
 
@@ -58,7 +40,6 @@ function App() {
             }
             else {
                 console.log('resp', resp);
-                setDataLoaded(true);
                 setWbData(resp);
             }
         });
@@ -80,6 +61,41 @@ function App() {
                 setIsFormInvalid(true);
                 setUploadedFileName('');
             }
+        }
+    }
+
+    const handleColButton = (col) => {
+        const targetCol = col.name;
+        console.log('targetCol', targetCol);
+        if (targetCol && wbData) {
+
+            const chosenColumn = wbData[0].cols.find((col) => col.name === targetCol);
+            console.log('chosenColumn', chosenColumn);
+            const columnIndex = chosenColumn?.key - 1;
+            console.log('columnIndex', columnIndex);
+            const allRowsArray: unknown[] = [];
+
+            // For every sheet in the workbook, add the rows to the allRowsArray
+            wbData.forEach(sheet => {
+                sheet.rows.forEach((row) => allRowsArray.push(row));
+            })
+            console.log('rowArray', allRowsArray);
+            const columnContentsArray: (string | undefined)[] = [];
+
+            // Loop through each row and add the chosen column to
+            allRowsArray.forEach((row) => {
+                if (row[columnIndex]) {
+                    columnContentsArray.push(row[columnIndex]);
+                }
+            });
+            console.log('columnContentsArray', columnContentsArray);
+
+            // for testing, use E
+            // Remove the undefined results
+            const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
+            console.log('cleanResults', cleanResults);
+
+            // Will need an array with only addresses
         }
     }
 
@@ -119,6 +135,31 @@ function App() {
             <p className="read-the-docs">
                 Click on the Vite and React logos to learn more
             </p>
+            <div>
+                { dataLoaded && (
+                    <OutTable
+                        data={demoRows}
+                        columns={demoCols}
+                        tableClassName='Table'
+                        tableHeaderRowClass='header'
+                    />
+                )}
+            </div>
+            <div>
+                { (demoCols) && (
+                    <>
+                        {demoCols.map((col) => (
+                            <button
+                                onClick={() => handleColButton(col)}
+                                className={'mx-2'}
+                                key={col.key}
+                            >
+                                {col.name}
+                            </button>
+                        ))}
+                    </>
+                )}
+            </div>
         </>
     )
 }
