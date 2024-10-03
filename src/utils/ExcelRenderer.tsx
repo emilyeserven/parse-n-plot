@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
+import {Component} from "react";
 
-interface ColumnObj {
+export interface ColumnObj {
     name: string,
     key: number
 }
@@ -9,6 +10,40 @@ export interface SheetObj {
     name: string,
     rows: unknown[],
     cols: ColumnObj[]
+}
+
+export class OutTable extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+
+    render() {
+        return (
+            <div className={this.props.className}>
+                <table className={this.props.tableClassName}  >
+                    <tbody>
+                    <tr>
+                        {this.props.withZeroColumn && !this.props.withoutRowNum && <th className={this.props.tableHeaderRowClass || ""}></th>}
+                        {
+                            this.props.columns.map((c) =>
+                                <th key={c.key} className={c.key === -1 ? this.props.tableHeaderRowClass : ""}>{c.key === -1 ? "" : c.name}</th>
+                            )
+
+                        }
+                    </tr>
+                    {this.props.data.map((r,i) => <tr key={i}>
+                        {!this.props.withoutRowNum && <td key={i} className={'border-solid border-2 border-slate-200'}>{this.props.renderRowNum?this.props.renderRowNum(r,i):i}</td>}
+                        {this.props.columns.map(c => <td key={c.key} className={'border-solid border-2 border-slate-200'}>{ r[c.key] }</td>)}
+                    </tr>)}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
 }
 
 type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
