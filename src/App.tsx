@@ -32,8 +32,8 @@ function App() {
     const [totalCount, setTotalCount] = useState(0);
     const [usedCol, setUsedCol] = useState<string | null>(null);
 
-    const fileInput = createRef();
-    const isCityCountsHaveProperties = cityCounts && Object.getOwnPropertyNames(cityCounts).length === 0;
+    const fileInput: React.RefObject<HTMLInputElement> = createRef();
+    const isCityCountsHaveProperties = cityCounts && Object.getOwnPropertyNames(cityCounts).length !== 0;
     const isOutTableCanBeDisplayed = dataLoaded && demoRows && demoCols;
 
 
@@ -61,8 +61,8 @@ function App() {
         });
     }
 
-    const fileHandler = (event) => {
-        if(event.target.files.length){
+    const fileHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if(event.target.files?.length){
             const fileObj = event.target.files[0];
             const fileName = fileObj.name;
 
@@ -146,7 +146,7 @@ function App() {
     }
 
     const openFileBrowser = () => {
-        fileInput.current.click();
+        fileInput.current?.click();
     }
 
     return (
@@ -160,7 +160,8 @@ function App() {
                         }}><i className="cui-file"></i> {wbData === null ? 'Browse' : 'Reupload'}</button>
                 <input type="file" hidden onChange={fileHandler} ref={fileInput}
                        onClick={(event) => {
-                           event.target.value = null
+                           const theTarget = event.target as HTMLInputElement;
+                           theTarget.value = '';
                        }} style={{"padding": "10px"}}/>
                 <button className={`${wbData !== null ? 'bg-slate-200 text-black ml-4' : 'bg-gray-600 text-white ml-4 italic cursor-default border-0'}`}
                         onClick={clearAll}><i className="cui-file"></i> {wbData !== null ? 'Clear All' : 'Nothing to Clear'}</button>
@@ -197,7 +198,7 @@ function App() {
                 )}
             </div>
             <div>
-                { usedCol && !isCityCountsHaveProperties && (
+                { usedCol && isCityCountsHaveProperties && (
                     <>
                         <h2 className='text-2xl mt-10 mb-2'>4: Review the results!</h2>
                         <h3 className='text-1xl mt-2 mb-4'>(FYI, there were {totalCount} addresses total.)</h3>
@@ -219,7 +220,7 @@ function App() {
                         </table>
                     </>
                 )}
-                {usedCol !== null && isCityCountsHaveProperties && (
+                {usedCol !== null && !isCityCountsHaveProperties && (
                     <>
                         <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>Try another!</h3>
