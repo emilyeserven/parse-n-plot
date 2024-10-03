@@ -139,45 +139,33 @@ function App() {
 
     return (
         <>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo" />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-
-                <button color="info" style={{color: "white", zIndex: 0}} onClick={() => { openFileBrowser()}}><i className="cui-file"></i> Browse&hellip;</button>
+            <div className="">
+                <h1 className='text-4xl mb-4'>Parse n' Plot</h1>
+                <h2 className='text-2xl mb-2'>1: Upload a file</h2>
+                <button color="info" style={{color: "white", zIndex: 0}} onClick={() => { openFileBrowser()}}><i className="cui-file"></i> {wbData === null ? 'Browse' : 'Reupload'}</button>
                 <input type="file" hidden onChange={fileHandler} ref={fileInput}
                        onClick={(event) => {
                            event.target.value = null
                        }} style={{"padding": "10px"}}/>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
             </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
             <div>
                 { (dataLoaded && demoRows && demoCols) && (
-                    <OutTable
-                        data={demoRows}
-                        columns={demoCols}
-                        tableClassName='Table'
-                        tableHeaderRowClass='header'
-                    />
+                    <>
+                        <h2 className='text-2xl mt-6 mb-2'>2: Check the preview of the spreadsheet.</h2>
+                        <h3 className='text-1xl mt-2 mb-2'>You may also upload a different file above.</h3>
+                        <OutTable
+                            data={demoRows}
+                            columns={demoCols}
+                            tableClassName='Table'
+                            tableHeaderRowClass='header'
+                        />
+                    </>
                 )}
             </div>
             <div>
-                { (demoCols) && (
+                {(demoCols) && (
                     <>
+                        <h2 className='text-2xl mt-6 mb-2'>3: Select the column with addresses.</h2>
                         {demoCols.map((col) => (
                             <button
                                 onClick={() => handleColButton(col)}
@@ -193,13 +181,14 @@ function App() {
             <div>
                 { (cityCounts) && (
                     <>
+                        <h2 className='text-2xl mt-8 mb-2'>4: Review the results!</h2>
                         Total: {totalCount}
                         <table>
                             <thead>
-                                <tr>
-                                    <th>City</th>
-                                    <th>Count</th>
-                                </tr>
+                            <tr>
+                                <th>City</th>
+                                <th>Count</th>
+                            </tr>
                             </thead>
                             <tbody>
                             {Object.keys(cityCounts).map((city) => (
