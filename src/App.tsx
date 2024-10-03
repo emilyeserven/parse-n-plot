@@ -16,6 +16,21 @@ function App() {
 
     const fileInput = createRef();
 
+    const askForColumn = (resp) => {
+        console.log('askForColumn');
+        const test = window.prompt('column?');
+        console.log('test', test);
+        console.log('resp', resp);
+        console.log('resp[0]', resp[0]);
+        console.log('resp[0].cols', resp[0].cols);
+        const colObj = resp[0].cols.find((col) => col.name === test);
+        console.log('colObj', colObj);
+        const colKey = colObj.key;
+        const rowObj = resp[0].rows[5][colKey];
+        // for testing, use E
+        console.log('rowObj', rowObj);
+    }
+
     const renderFile = (fileObj: File) => {
         console.log('fileObj', fileObj);
 
@@ -27,6 +42,7 @@ function App() {
                 console.log('resp', resp);
                 setDataLoaded(true);
                 setWbData(resp);
+                askForColumn(resp);
             }
         });
     }
@@ -39,10 +55,10 @@ function App() {
 
 
             //check for file extension and pass only if it is .xlsx and display error message otherwise
-            if(fileName.slice(fileName.lastIndexOf('.')+1) === "xlsx"){
+            if(fileName.slice(fileName.lastIndexOf('.')+1) === ("xlsx" || "xls")){
                 setUploadedFileName(fileName);
                 setIsFormInvalid(false);
-                renderFile(fileObj)
+                renderFile(fileObj);
             } else {
                 setIsFormInvalid(true);
                 setUploadedFileName('');
