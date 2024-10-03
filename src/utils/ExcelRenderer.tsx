@@ -75,8 +75,6 @@ export const OutTable: FC<OutTableProps> = ({
  * @link Original Library - https://github.com/ashishd751/react-excel-renderer/tree/master
  */
 export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
-    console.log('file', file);
-    console.log('callback', callback);
     return new Promise(function(resolve, reject) {
         if (reject) {
             console.log('Rejected: ', reject);
