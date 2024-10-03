@@ -1,4 +1,4 @@
-import {useState, useEffect, createRef, SyntheticEvent} from 'react'
+import {useState, useEffect, createRef} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -18,32 +18,34 @@ function App() {
 
 
     useEffect(() => {
-        const resp = wbData;
-        if (resp !== null) {
-            console.log('askForColumn');
-            const test = window.prompt('column?');
-            console.log('test', test);
-            console.log('resp', resp);
-            console.log('resp[0]', resp[0]);
-            console.log('resp[0].cols', resp[0].cols);
-            const colObj = resp[0].cols.find((col) => col.name === test);
-            console.log('colObj', colObj);
-            const colKey = colObj.key;
-            const rows = resp[0].rows;
-            const rowArray = [];
-            resp.forEach(sheet => {
-                console.log('sheet', sheet);
-                sheet.rows.forEach((row) => rowArray.push(row));
+        if (wbData !== null) {
+            const columnToUse = window.prompt('column?');
+
+            const chosenColumn = wbData[0].cols.find((col) => col.name === columnToUse);
+            const columnIndex = chosenColumn?.key;
+            const allRowsArray: unknown[] = [];
+
+            // For every sheet in the workbook, add the rows to the allRowsArray
+            wbData.forEach(sheet => {
+                sheet.rows.forEach((row) => allRowsArray.push(row));
             })
-            console.log('rowArray', rowArray);
-            const rowColumnArray = [];
-            rowArray.forEach((row) => {
-                rowColumnArray.push(row[colKey]);
+            console.log('rowArray', allRowsArray);
+            const columnContentsArray: (string|undefined)[] = [];
+
+            // Loop through each row and add the chosen column to
+            allRowsArray.forEach((row) => {
+                if (row[columnIndex]) {
+                    columnContentsArray.push(row[columnIndex]);
+                }
             });
+            console.log('columnContentsArray', columnContentsArray);
+
             // for testing, use E
-            console.log('rowColumnArray', rowColumnArray);
-            const cleanResults = rowColumnArray.filter((rowData) => rowData !== undefined);
+            // Remove the undefined results
+            const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
             console.log('cleanResults', cleanResults);
+
+            // Will need an array with only addresses
         }
     }, [wbData]);
 
