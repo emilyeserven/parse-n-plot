@@ -8,7 +8,7 @@ interface ColumnObj {
 export interface SheetObj {
     name: string,
     rows: unknown[],
-    cols: ColumnObj[] | ColumnObj
+    cols: ColumnObj[]
 }
 
 type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
@@ -47,7 +47,7 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
 
                 /* Convert array of arrays */
                 const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-                const cols = ws["!ref"] ? make_cols(ws["!ref"]) : { name: 'null', key: 0};
+                const cols = ws["!ref"] ? make_cols(ws["!ref"]) : [{ name: 'null', key: 0}];
 
                 const sheetData = { name: sheet, rows: rows, cols: cols };
 
