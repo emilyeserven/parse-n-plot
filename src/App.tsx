@@ -2,6 +2,7 @@ import {useState, useEffect, createRef} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import * as parser from 'parse-address';
+import * as zipcodes from 'zipcodes';
 import './App.css'
 import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
@@ -14,6 +15,7 @@ function App() {
     const [wbData, setWbData] = useState<SheetObj[] | null>(null);
     const [demoRows, setDemoRows] = useState<unknown[] | null>(null);
     const [demoCols, setDemoCols] = useState<ColumnObj[] | null>(null);
+    const [cityCounts, setCityCounts] = useState();
     const [cols, setCols] = useState<[]>([]);
     const [uploadedFileName, setUploadedFileName] = useState('');
 
@@ -102,6 +104,32 @@ function App() {
                 parsedAddresses.push(parser.parseLocation(item));
             });
             console.log('parsedAddresses', parsedAddresses);
+
+            const cleanedAddresses = parsedAddresses.filter((item) => item.city !== undefined && item.state !== undefined);
+            console.log('cleanedAddresses', cleanedAddresses);
+
+            const cityCount = {};
+            cleanedAddresses.forEach((item) => {
+                const cityStateString = `${item.city}, ${item.state}`;
+                if (cityCount[cityStateString]) {
+                    cityCount[cityStateString].count = cityCount[cityStateString].count + 1;
+                } else {
+                    cityCount[cityStateString] = {
+                        name: cityStateString,
+                        count: 1
+                    }
+                }
+            });
+            console.log('cityCount', cityCount);
+            setCityCounts(cityCount);
+            /*
+            const parsedZipcodes = [];
+            cleanedAddresses.forEach((address) => {
+                const zipcode = zipcodes.lookupByName(address.city, address.state);
+                parsedZipcodes.push(zipcode);
+            })
+            console.log('parsedZipcodes', parsedZipcodes);
+            */
         }
     }
 
@@ -163,6 +191,28 @@ function App() {
                                 {col.name}
                             </button>
                         ))}
+                    </>
+                )}
+            </div>
+            <div>
+                { (cityCounts) && (
+                    <>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>City</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {Object.keys(cityCounts).map((city) => (
+                                <tr key={cityCounts[city].name}>
+                                    <td>{cityCounts[city].name}</td>
+                                    <td>{cityCounts[city].count}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
                     </>
                 )}
             </div>
