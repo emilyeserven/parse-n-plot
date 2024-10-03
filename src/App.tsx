@@ -1,14 +1,13 @@
 import {useState, useEffect, createRef} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+// @ts-expect-error - Outside module, can't do anything about it.
 import * as parser from 'parse-address';
 import './App.css'
 import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
 function App() {
     const [count, setCount] = useState(0)
-
-    const [isOpen, setIsOpen] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [wbData, setWbData] = useState<SheetObj[] | null>(null);
     const [demoRows, setDemoRows] = useState<unknown[] | null>(null);
@@ -56,13 +55,13 @@ function App() {
         }
     }
 
-    const handleColButton = (col) => {
+    const handleColButton = (col: ColumnObj) => {
         const targetCol = col.name;
         if (targetCol && wbData) {
 
             const chosenColumn = wbData[0].cols.find((col) => col.name === targetCol);
             console.log('chosenColumn', chosenColumn);
-            const columnIndex = chosenColumn?.key - 1;
+            const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
             console.log('columnIndex', columnIndex);
             const allRowsArray: unknown[] = [];
 
