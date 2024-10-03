@@ -1,6 +1,4 @@
 import {useState, useEffect, createRef} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 // @ts-expect-error - Outside module, can't do anything about it.
 import * as parser from 'parse-address';
 import './App.css'
@@ -26,7 +24,6 @@ interface CityObj {
 }
 
 function App() {
-    const [count, setCount] = useState(0)
     const [dataLoaded, setDataLoaded] = useState(false);
     const [wbData, setWbData] = useState<SheetObj[] | null>(null);
     const [demoRows, setDemoRows] = useState<unknown[] | null>(null);
