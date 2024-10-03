@@ -169,7 +169,7 @@ function App() {
             <div>
                 {isOutTableCanBeDisplayed && (
                     <>
-                        <h2 className='text-2xl mt-8 mb-2'>2: Check the preview of the spreadsheet.</h2>
+                        <h2 className='text-2xl mt-10 mb-2'>2: Check the preview of the spreadsheet.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>You may also upload a different file above.</h3>
                         <OutTable
                             data={demoRows}
@@ -183,7 +183,7 @@ function App() {
             <div>
                 {demoCols && (
                     <>
-                        <h2 className='text-2xl mt-8 mb-2'>3: Select the column with addresses.</h2>
+                        <h2 className='text-2xl mt-10 mb-2'>3: Select the column with addresses.</h2>
                         {demoCols.map((col) => (
                             <button
                                 onClick={() => handleColButton(col)}
@@ -199,8 +199,8 @@ function App() {
             <div>
                 { usedCol && !isCityCountsHaveProperties && (
                     <>
-                        <h2 className='text-2xl mt-8 mb-2'>4: Review the results!</h2>
-                        Total: {totalCount}
+                        <h2 className='text-2xl mt-10 mb-2'>4: Review the results!</h2>
+                        <h3 className='text-1xl mt-2 mb-4'>(FYI, there were {totalCount} addresses total.)</h3>
                         <table>
                             <thead>
                             <tr>
@@ -211,15 +211,15 @@ function App() {
                             <tbody>
                             {Object.getOwnPropertyNames(cityCounts).map((city) => (
                                 <tr key={cityCounts[city].name}>
-                                    <td>{cityCounts[city].name}</td>
-                                    <td>{cityCounts[city].count}</td>
+                                    <td className='px-6 py-2 border-white border-2 border-solid'>{cityCounts[city].name}</td>
+                                    <td className='px-6 py-2 border-white border-2 border-solid'>{cityCounts[city].count}</td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
                     </>
                 )}
-                { usedCol !== null && isCityCountsHaveProperties && (
+                {usedCol !== null && isCityCountsHaveProperties && (
                     <>
                         <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>Try another!</h3>
