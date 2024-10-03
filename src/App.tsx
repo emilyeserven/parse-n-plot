@@ -33,6 +33,8 @@ function App() {
     const [usedCol, setUsedCol] = useState<string | null>(null);
 
     const fileInput = createRef();
+    const isCityCountsHaveProperties = Object.getOwnPropertyNames(cityCounts).length === 0;
+    const isOutTableCanBeDisplayed = dataLoaded && demoRows && demoCols;
 
 
     // Once we have the workbook data, we get the first 10 rows and columns for a preview.
@@ -76,19 +78,26 @@ function App() {
     const handleColButton = (col: ColumnObj) => {
         const selectedColName = col.name;
         setUsedCol(selectedColName);
+        const isColHasNameAndWbHasData = selectedColName && wbData;
 
-        if (selectedColName && wbData) {
+        if (isColHasNameAndWbHasData) {
+
+
             const chosenColumn = wbData[0].cols.find((col) => col.name === selectedColName);
             const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
+
+            // Set up all the arrays and objects
             const allRowsArray: unknown[] = [];
+            const columnContentsArray: (string | undefined)[] = [];
+            const parsedAddresses: AddressObj[] = [];
+            const cityCount: CityObj = {};
 
             // For every sheet in the workbook, add the rows to the allRowsArray
             wbData.forEach(sheet => {
                 sheet.rows.forEach((row) => row && allRowsArray.push(row));
             })
-            const columnContentsArray: (string | undefined)[] = [];
 
-            // Loop through each row and add the chosen column to
+            // Loop through each row and add the chosen column to array
             allRowsArray.forEach((row) => {
                 if (row[columnIndex]) {
                     columnContentsArray.push(row[columnIndex]);
@@ -99,7 +108,6 @@ function App() {
             const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
 
             // Parse all cleaned results as addresses
-            const parsedAddresses: AddressObj[] = [];
             cleanResults.forEach((item) => {
                 const parsedLocation = parser.parseLocation(item);
                 const isCityAndStateExist = parsedLocation.city !== undefined && parsedLocation.state !== undefined;
@@ -110,7 +118,6 @@ function App() {
             });
 
             // Make an object to count each individual city
-            const cityCount: CityObj = {};
             parsedAddresses.forEach((item) => {
                 const cityStateString = `${item.city}, ${item.state}`;
                 if (cityCount[cityStateString]) {
@@ -122,10 +129,20 @@ function App() {
                     }
                 }
             });
-            console.log('cityCount', cityCount);
+
             setCityCounts(cityCount);
             setTotalCount(parsedAddresses.length);
         }
+    }
+
+    const clearAll = () => {
+        setDataLoaded(false);
+        setWbData(null);
+        setDemoRows(null);
+        setDemoCols(null);
+        setCityCounts(null);
+        setTotalCount(0);
+        setUsedCol(null);
     }
 
     const openFileBrowser = () => {
@@ -137,14 +154,20 @@ function App() {
             <div className="">
                 <h1 className='text-4xl mb-4'>Parse n' Plot</h1>
                 <h2 className='text-2xl mb-2'>1: Upload a file</h2>
-                <button color="info" style={{color: "white", zIndex: 0}} onClick={() => { openFileBrowser()}}><i className="cui-file"></i> {wbData === null ? 'Browse' : 'Reupload'}</button>
+                <button className={`${wbData === null ? 'bg-slate-200 text-black' : 'bg-gray-600 text-white'}`}
+                        onClick={() => {
+                            openFileBrowser()
+                        }}><i className="cui-file"></i> {wbData === null ? 'Browse' : 'Reupload'}</button>
                 <input type="file" hidden onChange={fileHandler} ref={fileInput}
                        onClick={(event) => {
                            event.target.value = null
                        }} style={{"padding": "10px"}}/>
+                <button className={`${wbData !== null ? 'bg-slate-200 text-black ml-4' : 'bg-gray-600 text-white ml-4 italic cursor-default border-0'}`}
+                        onClick={clearAll}><i className="cui-file"></i> {wbData !== null ? 'Clear All' : 'Nothing to Clear'}</button>
+
             </div>
             <div>
-                { (dataLoaded && demoRows && demoCols) && (
+                {isOutTableCanBeDisplayed && (
                     <>
                         <h2 className='text-2xl mt-6 mb-2'>2: Check the preview of the spreadsheet.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>You may also upload a different file above.</h3>
@@ -158,7 +181,7 @@ function App() {
                 )}
             </div>
             <div>
-                {(demoCols) && (
+                {demoCols && (
                     <>
                         <h2 className='text-2xl mt-6 mb-2'>3: Select the column with addresses.</h2>
                         {demoCols.map((col) => (
@@ -174,7 +197,7 @@ function App() {
                 )}
             </div>
             <div>
-                { (Object.getOwnPropertyNames(cityCounts).length > 0) ? (
+                { usedCol && !isCityCountsHaveProperties && (
                     <>
                         <h2 className='text-2xl mt-8 mb-2'>4: Review the results!</h2>
                         Total: {totalCount}
@@ -195,7 +218,8 @@ function App() {
                             </tbody>
                         </table>
                     </>
-                ) : (
+                )}
+                { usedCol !== null && isCityCountsHaveProperties && (
                     <>
                         <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>Try another!</h3>
