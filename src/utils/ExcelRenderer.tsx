@@ -8,7 +8,7 @@ interface ColumnObj {
 interface SheetObj {
     name: string,
     rows: unknown[],
-    cols: Array<ColumnObj>[]
+    cols: ColumnObj[] | ColumnObj
 }
 
 type ExcelRendererCallback = (err: Error | null, resp: SheetObj[]) => void;
@@ -51,9 +51,6 @@ export function ExcelRenderer(file: File, callback: ExcelRendererCallback) {
 
                 const sheetData = { name: sheet, rows: rows, cols: cols };
 
-                // @stacyrays the error is the shape of this `sheetData` here, I
-                // can't seem to get the interface defined at the top to work with it.
-                // Specifically the issue is something involving `cols`.
                 data.push(sheetData);
             })
 
