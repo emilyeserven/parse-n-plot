@@ -26,9 +26,21 @@ function App() {
         const colObj = resp[0].cols.find((col) => col.name === test);
         console.log('colObj', colObj);
         const colKey = colObj.key;
-        const rowObj = resp[0].rows[5][colKey];
+        const rows = resp[0].rows;
+        const rowArray = [];
+        resp.forEach(sheet => {
+            console.log('sheet', sheet);
+            sheet.rows.forEach((row) => rowArray.push(row));
+        })
+        console.log('rowArray', rowArray);
+        const rowColumnArray = [];
+        rowArray.forEach((row) => {
+            rowColumnArray.push(row[colKey]);
+        });
         // for testing, use E
-        console.log('rowObj', rowObj);
+        console.log('rowColumnArray', rowColumnArray);
+        const cleanResults = rowColumnArray.filter((rowData) => rowData !== undefined);
+        console.log('cleanResults', cleanResults);
     }
 
     const renderFile = (fileObj: File) => {
