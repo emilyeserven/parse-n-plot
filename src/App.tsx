@@ -33,7 +33,7 @@ function App() {
     const [usedCol, setUsedCol] = useState<string | null>(null);
 
     const fileInput = createRef();
-    const isCityCountsHaveProperties = Object.getOwnPropertyNames(cityCounts).length === 0;
+    const isCityCountsHaveProperties = cityCounts && Object.getOwnPropertyNames(cityCounts).length === 0;
     const isOutTableCanBeDisplayed = dataLoaded && demoRows && demoCols;
 
 
@@ -169,7 +169,7 @@ function App() {
             <div>
                 {isOutTableCanBeDisplayed && (
                     <>
-                        <h2 className='text-2xl mt-6 mb-2'>2: Check the preview of the spreadsheet.</h2>
+                        <h2 className='text-2xl mt-8 mb-2'>2: Check the preview of the spreadsheet.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>You may also upload a different file above.</h3>
                         <OutTable
                             data={demoRows}
@@ -183,11 +183,11 @@ function App() {
             <div>
                 {demoCols && (
                     <>
-                        <h2 className='text-2xl mt-6 mb-2'>3: Select the column with addresses.</h2>
+                        <h2 className='text-2xl mt-8 mb-2'>3: Select the column with addresses.</h2>
                         {demoCols.map((col) => (
                             <button
                                 onClick={() => handleColButton(col)}
-                                className={`mx-2 ${col.name === usedCol ? 'bg-slate-200 text-black' : ''}`}
+                                className={`mx-2 ${col.name === usedCol ? 'bg-slate-200 text-black' : 'border-white border-2'}`}
                                 key={col.key}
                             >
                                 {col.name}
