@@ -6,7 +6,7 @@ import * as parser from 'parse-address';
 import './App.css'
 import {ColumnObj, ExcelRenderer, OutTable, SheetObj} from './utils/ExcelRenderer';
 
-type AddressObj = {
+interface AddressObj {
     number?: string,
     prefix?: string,
     street?: string,
@@ -15,12 +15,13 @@ type AddressObj = {
     state?: string,
     zip?: string
 }
-type City = {
+
+interface City {
         name: string,
         count: number
 }
 
-type CityObj = {
+interface CityObj {
     [key: string]: City
 }
 
