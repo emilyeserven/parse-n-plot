@@ -115,7 +115,8 @@ function App() {
                     className={`${wbData !== null ? 'bg-slate-200 text-black ml-4' : 'bg-gray-600 text-white ml-4 italic cursor-default border-0'}`}
                     onClick={clearAll}><i className="cui-file"></i> {wbData !== null ? 'Clear All' : 'Nothing to Clear'}
                 </button>
-                <p className='text-base mt-2 mb-2'>Uploaded files do not go to a server - they stay local - so you can upload things that are a bit on the sensitive side if you'd like to.</p>
+                <p className='text-base mt-2 mb-2'>Uploaded files do not go to a server - they stay local - so you can
+                    upload things that are a bit on the sensitive side if you'd like to.</p>
                 <p className='text-base mt-2 mb-4'>If you don't have your own file, you can <a
                     href='https://github.com/emilyeserven/parse-n-plot/blob/main/Dummy%20List.xlsx' target='blank'
                     className='text-slate-300 hover:text-slate-600 underline'>download the dummy file</a> from the repo
@@ -153,7 +154,7 @@ function App() {
                 )}
             </div>
             <div>
-                { usedCol && isCityCountsHasProperties && (
+                {usedCol && isCityCountsHasProperties && (
                     <>
                         <h2 className='text-2xl mt-10 mb-2'>4: Review the results!</h2>
                         <h3 className='text-1xl mt-2 mb-4'>(FYI, there were {totalCount} addresses total.)</h3>
@@ -184,6 +185,8 @@ function App() {
                     </>
                 )}
             </div>
+
+            <h2 className='text-2xl mt-10 mb-2'>5: View the results as a table on a map... soon. <i>Not yet implemented!</i></h2>
         </>
     )
 }
