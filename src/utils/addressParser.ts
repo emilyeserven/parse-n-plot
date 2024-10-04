@@ -13,6 +13,73 @@ interface AddressObj {
     zip?: string
 }
 
+// For every sheet in the workbook, add the rows to the allRowsArray
+const getAllTheRows = ({data}) => {
+    const allRowsArray = [];
+
+    data.forEach(sheet => {
+        sheet.rows.forEach((row) => row && allRowsArray.push(row));
+    })
+
+    return allRowsArray;
+}
+
+// Loop through each row and add the chosen column to array
+const getChosenColumnFromRows = ({allRowsArray, columnIndex}) => {
+    const columnContentsArray = [];
+
+    allRowsArray.forEach((row) => {
+        if (row[columnIndex]) {
+            columnContentsArray.push(row[columnIndex]);
+        }
+    });
+
+    return columnContentsArray;
+}
+
+// Remove the undefined results
+const getCleanedList = ({arrayToClean}) => {
+    return arrayToClean.filter((colContents) => colContents !== undefined)
+
+}
+
+// Parse all cleaned results as addresses
+const getParsedAddressList = ({columnContentsArray}) => {
+    const parsedAddressList = [];
+
+    const cleanResults = getCleanedList({arrayToClean: columnContentsArray});
+
+    cleanResults.forEach((item) => {
+        const parsedLocation = parser.parseLocation(item);
+        const isCityAndStateExist = parsedLocation.city !== undefined && parsedLocation.state !== undefined;
+
+        if (isCityAndStateExist) {
+            parsedAddressList.push(parsedLocation);
+        }
+    });
+    return parsedAddressList;
+}
+
+// Make an object to count each individual city
+const getCitiesObject = ({parsedAddressList}) => {
+    const cityObject = {};
+
+    parsedAddressList.forEach((item) => {
+        const cityStateString = `${item.city}, ${item.state}`;
+        if (cityObject[cityStateString]) {
+            cityObject[cityStateString].count = cityObject[cityStateString].count + 1;
+        } else {
+            cityObject[cityStateString] = {
+                name: cityStateString,
+                count: 1,
+                percent: 0
+            }
+        }
+    });
+
+    return cityObject;
+}
+
 export default function addressParser(
     wbData: SheetObj[],
     selectedColName: string
@@ -25,51 +92,18 @@ export default function addressParser(
     const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
 
     // Set up all the arrays and objects
-    const allRowsArray: unknown[] = [];
-    const columnContentsArray: (string | undefined)[] = [];
-    const parsedAddressList: AddressObj[] = [];
-    const cityCount: CityObj = {};
+    const allRowsArray = getAllTheRows({data: wbData});
+    const columnContentsArray = getChosenColumnFromRows({allRowsArray, columnIndex});
+    const parsedAddressList: AddressObj[] = getParsedAddressList({columnContentsArray});
+    const cityCount: CityObj = getCitiesObject({parsedAddressList});
 
-    // For every sheet in the workbook, add the rows to the allRowsArray
-    wbData.forEach(sheet => {
-        sheet.rows.forEach((row) => row && allRowsArray.push(row));
-    })
+    returnData.cityTotal = parsedAddressList.length;
 
-    // Loop through each row and add the chosen column to array
-    allRowsArray.forEach((row) => {
-        if (row[columnIndex]) {
-            columnContentsArray.push(row[columnIndex]);
-        }
-    });
-
-    // Remove the undefined results
-    const cleanResults = columnContentsArray.filter((colContents) => colContents !== undefined);
-
-    // Parse all cleaned results as addresses
-    cleanResults.forEach((item) => {
-        const parsedLocation = parser.parseLocation(item);
-        const isCityAndStateExist = parsedLocation.city !== undefined && parsedLocation.state !== undefined;
-
-        if (isCityAndStateExist) {
-            parsedAddressList.push(parsedLocation);
-        }
-    });
-
-    // Make an object to count each individual city
-    parsedAddressList.forEach((item) => {
-        const cityStateString = `${item.city}, ${item.state}`;
-        if (cityCount[cityStateString]) {
-            cityCount[cityStateString].count = cityCount[cityStateString].count + 1;
-        } else {
-            cityCount[cityStateString] = {
-                name: cityStateString,
-                count: 1
-            }
-        }
-    });
+    for (const city in cityCount) {
+        cityCount[city].percent = cityCount[city].count / returnData.cityTotal;
+    }
 
     returnData.cityCount = cityCount;
-    returnData.cityTotal = parsedAddressList.length;
 
     return returnData;
 }

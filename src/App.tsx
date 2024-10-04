@@ -6,7 +6,8 @@ import addressParser from "./utils/addressParser.ts";
 
 interface City {
         name: string,
-        count: number
+        count: number,
+        percent: number
 }
 
 export interface CityObj {
@@ -95,7 +96,8 @@ function App() {
     return (
         <>
             <div className="">
-                <h1 className='text-4xl mb-4'>Parse n' Plot</h1>
+                <h1 className='text-4xl mb-2'>Parse n' Plot</h1>
+                <p className='text-3xl mb-8'><b>Parse</b> an Excel file a<b>n</b>d then <b>Plot</b> the addresses on a map!</p>
                 <h2 className='text-2xl mb-2'>1: Upload a file</h2>
                 <button className={`${wbData === null ? 'bg-slate-200 text-black' : 'bg-gray-600 text-white'}`}
                         onClick={() => {
@@ -150,6 +152,7 @@ function App() {
                             <tr>
                                 <th>City</th>
                                 <th>Count</th>
+                                <th>% of Jobs</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -157,6 +160,7 @@ function App() {
                                 <tr key={cityCounts[city].name}>
                                     <td className='px-6 py-2 border-white border-2 border-solid'>{cityCounts[city].name}</td>
                                     <td className='px-6 py-2 border-white border-2 border-solid'>{cityCounts[city].count}</td>
+                                    <td className='px-6 py-2 border-white border-2 border-solid'>{(cityCounts[city].percent * 100).toFixed(2)}%</td>
                                 </tr>
                             ))}
                             </tbody>
