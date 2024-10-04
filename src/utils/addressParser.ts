@@ -89,7 +89,7 @@ export default function addressParser(
         cityTotal: 0
     };
     const chosenColumn = wbData[0].cols.find((col) => col.name === selectedColName);
-    const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
+    const columnIndex = chosenColumn?.key ? chosenColumn.key : 0;
 
     // Set up all the arrays and objects
     const allRowsArray: unknown[] = getAllTheRows(wbData);

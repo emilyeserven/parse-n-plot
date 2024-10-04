@@ -34,8 +34,8 @@ export const OutTable: FC<OutTableProps> = ({
         columns,
         className,
         tableClassName,
-        withZeroColumn = false,
-        withRowNum = true,
+        withZeroColumn = true,
+        withRowNum = false,
         renderRowNum,
         tableHeaderRowClass
     },
@@ -58,8 +58,9 @@ export const OutTable: FC<OutTableProps> = ({
                 {data.map((r, i) => <tr key={i}>
                     {withRowNum && <td key={i}
                                                       className={'border-solid border-2 border-slate-200'}>{renderRowNum ? renderRowNum(r, i) : i}</td>}
-                    {columns.map(c => <td key={c.key}
-                                                     className={'border-solid border-2 border-slate-200'}>{r[c.key]}</td>)}
+                    {columns.map(c => (<td key={c.key}
+                                     className={'border-solid border-2 border-slate-200'}>{r[c.key]}</td>)
+                    )}
                 </tr>)}
                 </tbody>
             </table>

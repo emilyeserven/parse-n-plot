@@ -34,7 +34,7 @@ function App() {
             const firstSheetRows = wbData[0].rows.slice(0,9);
             setDemoRows(firstSheetRows);
 
-            const firstSheetCols = wbData[0].cols.slice(0,9);
+            const firstSheetCols = wbData[0].cols.slice(0,20);
             setDemoCols(firstSheetCols);
 
             setDataLoaded(true);
@@ -59,8 +59,10 @@ function App() {
 
 
             //check for file extension and pass only if it is .xlsx and display error message otherwise
-            if(fileName.slice(fileName.lastIndexOf('.')+1) === ("xlsx" || "xls")){
+            if(fileName.slice(fileName.lastIndexOf('.')+1) === ("xlsx" || "xls" || "csv")){
                 renderFile(fileObj);
+            } else {
+                throw console.error('Not the right file type!');
             }
         }
     }
@@ -102,7 +104,7 @@ function App() {
                 <button className={`${wbData === null ? 'bg-slate-200 text-black' : 'bg-gray-600 text-white'}`}
                         onClick={() => {
                             openFileBrowser()
-                        }}><i className="cui-file"></i> {wbData === null ? 'Browse' : 'Reupload'}</button>
+                        }}><i className="cui-file"></i> {wbData === null ? 'Upload (XLS or XLSX)' : 'Reupload'}</button>
                 <input type="file" hidden onChange={fileHandler} ref={fileInput}
                        onClick={(event) => {
                            const theTarget = event.target as HTMLInputElement;
@@ -152,7 +154,7 @@ function App() {
                             <tr>
                                 <th>City</th>
                                 <th>Count</th>
-                                <th>% of Jobs</th>
+                                <th>% of Total</th>
                             </tr>
                             </thead>
                             <tbody>
