@@ -29,7 +29,7 @@ const getChosenColumnFromRows = (allRowsArray: undefined[], columnIndex: number)
     const columnContentsArray: (string | undefined)[] = [];
 
     allRowsArray.forEach((row) => {
-        if (row[columnIndex]) {
+        if (row && row[columnIndex]) {
             columnContentsArray.push(row[columnIndex]);
         }
     });
