@@ -99,7 +99,8 @@ function App() {
         <>
             <div className="">
                 <h1 className='text-4xl mb-2'>Parse n' Plot</h1>
-                <p className='text-3xl mb-8'><b>Parse</b> an Excel file a<b>n</b>d then <b>Plot</b> the addresses on a map!</p>
+                <p className='text-3xl mb-8'><b>Parse</b> an Excel file a<b>n</b>d then <b>Plot</b> the addresses on a
+                    map!</p>
                 <h2 className='text-2xl mb-2'>1: Upload a file</h2>
                 <button className={`${wbData === null ? 'bg-slate-200 text-black' : 'bg-gray-600 text-white'}`}
                         onClick={() => {
@@ -110,9 +111,15 @@ function App() {
                            const theTarget = event.target as HTMLInputElement;
                            theTarget.value = '';
                        }} style={{"padding": "10px"}}/>
-                <button className={`${wbData !== null ? 'bg-slate-200 text-black ml-4' : 'bg-gray-600 text-white ml-4 italic cursor-default border-0'}`}
-                        onClick={clearAll}><i className="cui-file"></i> {wbData !== null ? 'Clear All' : 'Nothing to Clear'}</button>
-                <p className='text-base mt-2 mb-4'>You can also <a href='https://github.com/emilyeserven/parse-n-plot/blob/main/Dummy%20List.xlsx' target='blank' className='text-slate-300 hover:text-slate-600 underline'>download the dummy file</a> from the repo to test the app out!</p>
+                <button
+                    className={`${wbData !== null ? 'bg-slate-200 text-black ml-4' : 'bg-gray-600 text-white ml-4 italic cursor-default border-0'}`}
+                    onClick={clearAll}><i className="cui-file"></i> {wbData !== null ? 'Clear All' : 'Nothing to Clear'}
+                </button>
+                <p className='text-base mt-2 mb-2'>Uploaded files do not go to a server - they stay local - so you can upload things that are a bit on the sensitive side if you'd like to.</p>
+                <p className='text-base mt-2 mb-4'>If you don't have your own file, you can <a
+                    href='https://github.com/emilyeserven/parse-n-plot/blob/main/Dummy%20List.xlsx' target='blank'
+                    className='text-slate-300 hover:text-slate-600 underline'>download the dummy file</a> from the repo
+                    to test the app out!</p>
 
             </div>
             <div>
