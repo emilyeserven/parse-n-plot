@@ -59,7 +59,7 @@ function App() {
 
 
             //check for file extension and pass only if it is .xlsx and display error message otherwise
-            if(fileName.slice(fileName.lastIndexOf('.')+1) === ("xlsx" || "xls" || "csv")){
+            if(fileName.slice(fileName.lastIndexOf('.')+1) === ("xlsx" || "xls")){
                 renderFile(fileObj);
             } else {
                 throw console.error('Not the right file type!');
@@ -112,6 +112,7 @@ function App() {
                        }} style={{"padding": "10px"}}/>
                 <button className={`${wbData !== null ? 'bg-slate-200 text-black ml-4' : 'bg-gray-600 text-white ml-4 italic cursor-default border-0'}`}
                         onClick={clearAll}><i className="cui-file"></i> {wbData !== null ? 'Clear All' : 'Nothing to Clear'}</button>
+                <p className='text-base mt-2 mb-4'>You can also <a href='https://github.com/emilyeserven/parse-n-plot/blob/main/Dummy%20List.xlsx' target='blank' className='text-slate-300 hover:text-slate-600 underline'>download the dummy file</a> from the repo to test the app out!</p>
 
             </div>
             <div>
