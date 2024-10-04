@@ -14,10 +14,10 @@ interface AddressObj {
 }
 
 // For every sheet in the workbook, add the rows to the allRowsArray
-const getAllTheRows = ({data}) => {
-    const allRowsArray = [];
+const getAllTheRows = (wbData:SheetObj[]): unknown[] => {
+    const allRowsArray: unknown[] = [];
 
-    data.forEach(sheet => {
+    wbData.forEach(sheet => {
         sheet.rows.forEach((row) => row && allRowsArray.push(row));
     })
 
@@ -25,8 +25,8 @@ const getAllTheRows = ({data}) => {
 }
 
 // Loop through each row and add the chosen column to array
-const getChosenColumnFromRows = ({allRowsArray, columnIndex}) => {
-    const columnContentsArray = [];
+const getChosenColumnFromRows = (allRowsArray: undefined[], columnIndex: number): (string|undefined)[] => {
+    const columnContentsArray: (string | undefined)[] = [];
 
     allRowsArray.forEach((row) => {
         if (row[columnIndex]) {
@@ -38,16 +38,16 @@ const getChosenColumnFromRows = ({allRowsArray, columnIndex}) => {
 }
 
 // Remove the undefined results
-const getCleanedList = ({arrayToClean}) => {
+const getCleanedList = (arrayToClean: any[]): any[] => {
     return arrayToClean.filter((colContents) => colContents !== undefined)
 
 }
 
 // Parse all cleaned results as addresses
-const getParsedAddressList = ({columnContentsArray}) => {
-    const parsedAddressList = [];
+const getParsedAddressList = (columnContentsArray: (string | undefined)[]): AddressObj[] => {
+    const parsedAddressList: AddressObj[] = [];
 
-    const cleanResults = getCleanedList({arrayToClean: columnContentsArray});
+    const cleanResults = getCleanedList(columnContentsArray);
 
     cleanResults.forEach((item) => {
         const parsedLocation = parser.parseLocation(item);
@@ -61,8 +61,8 @@ const getParsedAddressList = ({columnContentsArray}) => {
 }
 
 // Make an object to count each individual city
-const getCitiesObject = ({parsedAddressList}) => {
-    const cityObject = {};
+const getCitiesObject = (parsedAddressList: AddressObj[]) => {
+    const cityObject: CityObj = {};
 
     parsedAddressList.forEach((item) => {
         const cityStateString = `${item.city}, ${item.state}`;
@@ -92,10 +92,10 @@ export default function addressParser(
     const columnIndex = chosenColumn?.key ? chosenColumn.key - 1 : 0;
 
     // Set up all the arrays and objects
-    const allRowsArray = getAllTheRows({data: wbData});
-    const columnContentsArray = getChosenColumnFromRows({allRowsArray, columnIndex});
-    const parsedAddressList: AddressObj[] = getParsedAddressList({columnContentsArray});
-    const cityCount: CityObj = getCitiesObject({parsedAddressList});
+    const allRowsArray: unknown[] = getAllTheRows(wbData);
+    const columnContentsArray: (string | undefined)[] = getChosenColumnFromRows(allRowsArray, columnIndex);
+    const parsedAddressList: AddressObj[] = getParsedAddressList(columnContentsArray);
+    const cityCount: CityObj = getCitiesObject(parsedAddressList);
 
     returnData.cityTotal = parsedAddressList.length;
 
