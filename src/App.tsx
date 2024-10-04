@@ -176,17 +176,18 @@ function App() {
                             ))}
                             </tbody>
                         </table>
+
+                        <h2 className='text-2xl mt-10 mb-2 text-white'>5: View the results as a table on a map... soon. <i>Not yet
+                            implemented!</i></h2>
                     </>
                 )}
                 {usedCol !== null && !isCityCountsHasProperties && (
                     <>
-                        <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
+                    <h2 className='text-2xl mt-8 mb-2'>Hmmm... There aren't any addresses in this column.</h2>
                         <h3 className='text-1xl mt-2 mb-2'>Try another!</h3>
                     </>
                 )}
             </div>
-
-            <h2 className='text-2xl mt-10 mb-2'>5: View the results as a table on a map... soon. <i>Not yet implemented!</i></h2>
         </>
     )
 }
